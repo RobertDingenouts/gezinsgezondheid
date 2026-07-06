@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#0f172a">
+    <title>Hormoonvrij Plan Eczeem</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --green: #4ade80;
+            --green-dim: rgba(74, 222, 128, 0.15);
+            --red: #f87171;
+            --red-dim: rgba(248, 113, 113, 0.15);
+            --orange: #fb923c;
+            --orange-dim: rgba(251, 146, 60, 0.15);
+            --purple: #c084fc;
+            --purple-dim: rgba(192, 132, 252, 0.15);
+            --yellow: #fbbf24;
+            --yellow-dim: rgba(251, 191, 36, 0.15);
+            --border: #334155;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 16px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--green), #22c55e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .header-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-link:active { transform: scale(0.95); }
+        .nav-link.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: var(--green-dim);
+            border-left: 3px solid var(--green);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--green);
+            line-height: 1.5;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Zone Cards */
+        .zone-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .zone-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .zone-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zone-emoji {
+            font-size: 24px;
+        }
+
+        .zone-info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .zone-info .zone-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .zone-toggle {
+            font-size: 18px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .zone-card.open .zone-toggle { transform: rotate(180deg); }
+
+        .zone-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .zone-card.open .zone-body { max-height: 800px; }
+
+        .zone-content {
+            padding: 0 18px 18px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .zone-content p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+
+        .zone-content ul {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .zone-content li {
+            padding: 5px 0 5px 18px;
+            position: relative;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .zone-content li::before {
+            content: '›';
+            position: absolute;
+            left: 4px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        /* Badges */
+        .badge-hormoonvrij {
+            background: var(--green-dim);
+            color: var(--green);
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-antibioticum {
+            background: var(--orange-dim);
+            color: var(--orange);
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-basis {
+            background: var(--accent-glow);
+            color: var(--accent);
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .checklist-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checklist-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-progress {
+            font-size: 12px;
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-item:active { background: var(--bg-card-alt); }
+
+        .checklist-item.done .checklist-check {
+            background: var(--green);
+            border-color: var(--green);
+            color: #0f172a;
+        }
+
+        .checklist-item.done .checklist-text { opacity: 0.5; text-decoration: line-through; }
+
+        .checklist-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .checklist-text .step-num {
+            font-size: 11px;
+            color: var(--green);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .checklist-text .step-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 2px 0;
+        }
+
+        .checklist-text .step-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Alert */
+        .alert-box {
+            background: var(--red-dim);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 12px;
+        }
+
+        .alert-box h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .alert-box ul {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .alert-box li {
+            padding: 5px 0 5px 18px;
+            position: relative;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .alert-box li::before {
+            content: '⚠';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content { animation: fadeIn 0.3s ease; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-inner">
+            <div class="header-logo">🌿</div>
+            <div class="header-text">
+                <h1>Hormoonvrij Plan</h1>
+                <p>Eczeem behandeling Nine (11 maanden)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">← Behandelplan</a>
+            <a href="boodschappen.html" class="nav-link">🛒 Boodschappen</a>
+            <a href="#" class="nav-link active">🌿 Hormoonvrij</a>
+        </div>
+
+        <div class="disclaimer">
+            ✅ <strong>100% hormoonvrij:</strong> Dit plan gebruikt alleen hormoonvrije middelen. Pimecrolimus (Elidel®) remt ontsteking zonder huidverdunning. Veilig voor baby's vanaf 3 maanden.
+        </div>
+
+        <!-- Wetenschappelijke Onderbouwing -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon" style="background: var(--purple-dim);">🔬</div>
+                <h2>Wetenschappelijke Onderbouwing</h2>
+            </div>
+
+            <div class="zone-card open">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🧪</span>
+                        <div class="zone-info">
+                            <h3>Pimecrolimus (Elidel®) — Hormoonvrij</h3>
+                            <div class="zone-sub">Goedgekeurd vanaf 3 maanden</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <p><strong>Hoe werkt het:</strong> Pimecrolimus remt specifiek de ontstekingscellen (T-cellen) in de huid zonder de collageensynthese te beïnvloeden. Hierdoor is er <strong>geen risico op huidverdunning</strong> — in tegenstelling tot hormoonzalf.</p>
+                        <ul>
+                            <li>Officieel goedgekeurd voor baby's <strong>vanaf 3 maanden</strong></li>
+                            <li>Veilig bevonden voor langdurig gebruik</li>
+                            <li>Remt jeuk en ontsteking effectief</li>
+                            <li>Geen systemische bijwerkingen bij correct gebruik</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zone-card">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🦠</span>
+                        <div class="zone-info">
+                            <h3>Fusidinezuur — Antibioticum (geen hormoon)</h3>
+                            <div class="zone-sub">Bescherming tegen infectie</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <p><strong>Hoe werkt het:</strong> Fusidinezuur is een lokaal antibioticum dat bacteriële infectie voorkomt bij opengekrabde plekken. Het is <strong>geen hormoon</strong> maar beschermt tegen Staphylococcus aureus kolonisatie.</p>
+                        <ul>
+                            <li>Voorkomt impetiginisatie (bacteriële infectie)</li>
+                            <li>Tijdelijk gebruik tot wond gesloten is</li>
+                            <li>Geen hormoonbijwerkingen</li>
+                            <li>Recept nodig van arts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zone-card">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🛡️</span>
+                        <div class="zone-info">
+                            <h3>Basisverzorging — Barrièreherstel</h3>
+                            <div class="zone-sub">Neutrale zalf, geen medicatie</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <p><strong>Hoe werkt het:</strong> Overvloedige basiszalf herstelt de epidermale barrièrefunctie. De huid verliest minder vocht en wordt minder gevoelig voor irriterende stoffen.</p>
+                        <ul>
+                            <li>Vaseline-paraffine of lanettezalf (20% vaseline)</li>
+                            <li>Minimaal 1-2x daags overvloedig insmeren</li>
+                            <li>Altijd binnen 3 minuten na baden</li>
+                            <li>1 uur wachten na medicinale zalf</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone-specifieke Aanpak -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon" style="background: var(--green-dim);">📍</div>
+                <h2>Zone-specifieke Aanpak (Hormoonvrij)</h2>
+            </div>
+
+            <!-- Zone A -->
+            <div class="zone-card open">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🫧</span>
+                        <div class="zone-info">
+                            <h3>Onder de kin & Borst</h3>
+                            <div class="zone-sub">Dunne huid, kwijlrug</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <span class="badge-hormoonvrij">Pimecrolimus 1% (Elidel®)</span>
+                        <p><strong>Aanpak:</strong></p>
+                        <ul>
+                            <li><strong>Pimecrolimus 1% crème (Elidel®)</strong> — hormoonvrij, veilig vanaf 3 maanden</li>
+                            <li>Smeer 2x daags dun in tot de huid rustig is</li>
+                            <li>Geen huidverdunning, geen risico op atrofië</li>
+                            <li>Daarna overstappen naar alleen basiszalf</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone B -->
+            <div class="zone-card">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🩹</span>
+                        <div class="zone-info">
+                            <h3>Elleboogplooi (Opengekrabd)</h3>
+                            <div class="zone-sub">Open wond, hoog infectierisico</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <span class="badge-antibioticum">Fusidinezuur → Pimecrolimus</span>
+                        <p><strong>Fase 1 — Tot wond gesloten:</strong></p>
+                        <ul>
+                            <li><strong>Fusidinezuur</strong> (antibioticum, geen hormoon) op open plek</li>
+                            <li>Houd schoon, voorkom infectie</li>
+                            <li>Geen vette zalf op open wond</li>
+                        </ul>
+                        <p><strong>Fase 2 — Zodra wond gesloten:</strong></p>
+                        <ul>
+                            <li><strong>Pimecrolimus 1% (Elidel®)</strong> voor achterliggende ontsteking</li>
+                            <li>Hormoonvrij, geen huidverdunning</li>
+                            <li>2x daags tot huid rustig is</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone C -->
+            <div class="zone-card">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🛡️</span>
+                        <div class="zone-info">
+                            <h3>Romp & Ledematen (Grote Plakkaten)</h3>
+                            <div class="zone-sub">Uitgebreide schilferige plekken</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <span class="badge-hormoonvrij">Pimecrolimus + Basiszalf</span>
+                        <p><strong>Aanpak:</strong></p>
+                        <ul>
+                            <li><strong>Pimecrolimus 1% (Elidel®)</strong> op actieve, rode plekken</li>
+                            <li>2x daags tot ontsteking weg is</li>
+                            <li><strong>Daarna:</strong> Alleen basiszalf voor barrièreherstel</li>
+                            <li>Overvloedig smeren, minimaal 1-2x daags</li>
+                            <li>1 uur wachten na Pimecrolimus voor basiszalf</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dagelijks Plan -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon" style="background: var(--green-dim);">✅</div>
+                <h2>Dagelijks Hormoonvrij Plan</h2>
+            </div>
+
+            <div class="checklist" id="daily-checklist">
+                <div class="checklist-header">
+                    <h3>📋 Routine Volgorde</h3>
+                    <span class="checklist-progress" id="checklist-progress">0/5</span>
+                </div>
+                <div class="checklist-item" onclick="toggleCheck(this)" data-step="1">
+                    <div class="checklist-check"></div>
+                    <div class="checklist-text">
+                        <div class="step-num">Stap 1</div>
+                        <div class="step-title">Kort & Lauw Bad (max 2x/week)</div>
+                        <div class="step-desc">Bad maximaal 5-10 minuten in lauwwarm water (max 37°C). Eventueel milde medicinale badolie. Geen schuimende zepen.</div>
+                    </div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheck(this)" data-step="2">
+                    <div class="checklist-check"></div>
+                    <div class="checklist-text">
+                        <div class="step-num">Stap 2</div>
+                        <div class="step-title">Droogdeppen & Pimecrolimus</div>
+                        <div class="step-desc">Dep huid voorzichtig droog (niet wrijven!). Breng Pimecrolimus 1% (Elidel®) dun aan op actieve plekken met Fingertip Unit-methode.</div>
+                    </div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheck(this)" data-step="3">
+                    <div class="checklist-check"></div>
+                    <div class="checklist-text">
+                        <div class="step-num">Stap 3</div>
+                        <div class="step-title">Wachttijd — 1 Uur</div>
+                        <div class="step-desc">Laat Pimecrolimus minimaal 1 uur ongestoord intrekken in de diepere huidlagen.</div>
+                    </div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheck(this)" data-step="4">
+                    <div class="checklist-check"></div>
+                    <div class="checklist-text">
+                        <div class="step-num">Stap 4</div>
+                        <div class="step-title">Basiszalf over het hele lichaam</div>
+                        <div class="step-desc">Smeer na 1 uur het gehele lichaam (inclusief behandelde plekken) ruim in met neutrale basiszalf (vaseline-paraffine of lanettezalf).</div>
+                    </div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheck(this)" data-step="5">
+                    <div class="checklist-check"></div>
+                    <div class="checklist-text">
+                        <div class="step-num">Avond</div>
+                        <div class="step-title">Krabpak aan & Slaapkamer checken</div>
+                        <div class="step-desc">Krabpak (Binamed®/DermaCura®) aan voor nacht. Slaapkamer max 18-19°C, 100% katoen, geen wol of synthetisch.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nachtrust -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon" style="background: var(--purple-dim);">🌙</div>
+                <h2>Nachtrust & Jeukverlichting</h2>
+            </div>
+
+            <div class="zone-card">
+                <div class="zone-header" onclick="toggleZone(this)">
+                    <div class="zone-header-left">
+                        <span class="zone-emoji">🛏️</span>
+                        <div class="zone-info">
+                            <h3>Slapen zonder hormoon</h3>
+                            <div class="zone-sub">Natuurlijke jeukverlichting</div>
+                        </div>
+                    </div>
+                    <span class="zone-toggle">▼</span>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-content">
+                        <ul>
+                            <li><strong>Krabpakken:</strong> Binamed® of DermaCura® (vergost via basisverzekering, max 3 stuks per maat per jaar, geen eigen risico voor minderjarigen)</li>
+                            <li><strong>Huidkoeling:</strong> Coldpack met schone doek eromheen (nooit direct op huid) of koelzalf zonder rozenolie</li>
+                            <li><strong>Kleding:</strong> Uitsluitend 100% katoen, vermijd wol en synthetisch</li>
+                            <li><strong>Temperatuur:</strong> Max 18-19°C, vermijd te dikke dekens</li>
+                            <li><strong>Let op:</strong> Ketotifensiroop (Zaditen®) alleen bij ernstige slaapverstoring, max 1-2 weken, 2,5 ml voor de nacht (vanaf 6 maanden)</li>
+                            <li><strong>⚠️ Promethazine:</strong> Strikt gecontraïndiceerd onder 2 jaar (ademhalingsdepressie risico)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alarmsignalen -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon" style="background: var(--red-dim);">🚨</div>
+                <h2>Alarmsignalen — Direct Arts Bellen</h2>
+            </div>
+
+            <div class="alert-box">
+                <h3>⚠️ Neem direct contact op bij:</h3>
+                <ul>
+                    <li>Gele korstjes, blaasjes of pus op open plekken (tekenen van bacteriële infectie)</li>
+                    <li>Plotseling kleine, diepe, pijnlijke blaasjes of 'ponskaartachtige' wondjes die zich snel uitbreiden, al dan niet met koorts (kan Eczema Herpeticum zijn — spoedgeval)</li>
+                    <li>Pimecrolimus helpt na 2-3 weken niet of eczeem wordt erger</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Gezinsgezondheid © 2026</p>
+        <p style="margin-top: 4px;">🌿 100% hormoonvrij plan voor Nine</p>
+    </div>
+
+    <script>
+        function toggleZone(header) {
+            const card = header.parentElement;
+            card.classList.toggle('open');
+        }
+
+        function toggleCheck(item) {
+            item.classList.toggle('done');
+            const check = item.querySelector('.checklist-check');
+            check.textContent = item.classList.contains('done') ? '✓' : '';
+            updateProgress();
+            saveChecklist();
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('#daily-checklist .checklist-item').length;
+            const done = document.querySelectorAll('#daily-checklist .checklist-item.done').length;
+            document.getElementById('checklist-progress').textContent = `${done}/${total}`;
+        }
+
+        function saveChecklist() {
+            const items = document.querySelectorAll('#daily-checklist .checklist-item');
+            const state = {};
+            items.forEach(item => {
+                state[item.dataset.step] = item.classList.contains('done');
+            });
+            localStorage.setItem('eczeem-hormoonvrij-checklist', JSON.stringify(state));
+        }
+
+        function loadChecklist() {
+            const saved = localStorage.getItem('eczeem-hormoonvrij-checklist');
+            if (!saved) return;
+            try {
+                const state = JSON.parse(saved);
+                const items = document.querySelectorAll('#daily-checklist .checklist-item');
+                items.forEach(item => {
+                    if (state[item.dataset.step]) {
+                        item.classList.add('done');
+                        item.querySelector('.checklist-check').textContent = '✓';
+                    }
+                });
+                updateProgress();
+            } catch(e) {}
+        }
+
+        function checkDailyReset() {
+            const lastReset = localStorage.getItem('eczeem-last-reset');
+            const today = new Date().toDateString();
+            if (lastReset !== today) {
+                localStorage.removeItem('eczeem-hormoonvrij-checklist');
+                localStorage.setItem('eczeem-last-reset', today);
+            }
+        }
+
+        checkDailyReset();
+        loadChecklist();
+    </script>
+</body>
+</html>
